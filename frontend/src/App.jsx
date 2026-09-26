@@ -11,27 +11,52 @@ function App() {
   const [descripcion, setDescripcion] = useState("");
   const [posts, setPosts] = useState([]);
 
+// Obtener publicaciones
   const getPosts = async () => {
-    const { data: posts } = await axios.get(urlBaseServer + "/posts");
-    setPosts([...posts]);
+    try {
+      const { data: posts } = await axios.get(urlBaseServer + "/posts");
+      setPosts([...posts]);
+    } catch (error) {
+      console.error("Error al obtener las publicaciones:", error);
+    }
   };
 
+// Crear publicación y limpiar inputs
   const agregarPost = async () => {
-    const post = { titulo, img: imgSrc, descripcion };
-    await axios.post(urlBaseServer + "/posts", post);
-    getPosts();
+    try {
+      const post = { titulo, img: imgSrc, descripcion };
+      await axios.post(urlBaseServer + "/posts", post);
+      getPosts();
+      
+      // Limpia las variables de estado
+      setTitulo("");
+      setImgSRC("");
+      setDescripcion("");
+    } catch (error) {
+      console.error("Error al crear la publicación:", error);
+    }
   };
 
-  // este método se utilizará en el siguiente desafío
+
+// Requerimiento 1: Modificar likes (PUT)
   const like = async (id) => {
-    await axios.put(urlBaseServer + `/posts/like/${id}`);
-    getPosts();
+    try {
+      await axios.put(urlBaseServer + `/posts/like/${id}`);
+      getPosts();
+    } catch (error) {
+      console.error("Error al dar like:", error);
+    }
   };
 
-  // este método se utilizará en el siguiente desafío
+  
+// Requerimiento 2: Eliminar publicación (DELETE)
   const eliminarPost = async (id) => {
-    await axios.delete(urlBaseServer + `/posts/${id}`);
-    getPosts();
+    try {
+      await axios.delete(urlBaseServer + `/posts/${id}`);
+      getPosts();
+    } catch (error) {
+      console.error("Error al eliminar la publicación:", error);
+    }
   };
 
   useEffect(() => {
