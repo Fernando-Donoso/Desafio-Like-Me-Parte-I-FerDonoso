@@ -38,3 +38,17 @@ export const removePost = async (id) => {
     throw error;
   }
 }
+
+// Modificar titulo, img o descripcion de un post
+export const modifyPost = async (id, titulo, img, descripcion) => {
+  try {
+    const query = "UPDATE posts SET titulo = $1, img = $2, descripcion = $3 WHERE id = $4 RETURNING *";
+    const values = [titulo, img, descripcion, id];
+    const { rows } = await pool.query(query, values);
+    return rows[0];
+  } catch (error) {
+    console.error("Error al modificar el post:", error.message);
+    throw error;
+  }
+}
+

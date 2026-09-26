@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import pool from './db.js'
-import { modifyLike, removePost } from './db.js';
+import { modifyLike, removePost, modifyPost  } from './db.js';
 
 const app = express()
 const PORT = 3000
@@ -44,16 +44,37 @@ app.put('/posts/like/:id', async (req, res) => {
   }
 });
 
+
 // Requerimiento 2: Ruta DELETE para eliminar registro
 app.delete('/posts/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const result = await removePost(id);
+    if (!result) {
+      return res.status(404).send("Post no encontrado");
+    }
     res.status(200).send("Post eliminado con éxito");
   } catch (error) {
     res.status(500).send("Error interno al eliminar el post");
   }
 });
+
+
+// PUT - modificar contenido de un post
+app.put('/posts/:id', async (req, res) => {
+  const { id } = req.params
+  const { titulo, img, descripcion } = req.body
+  try {
+    const result = await modifyPost(id, titulo, img, descripcion)
+    if (!result) {
+      return res.status(404).send("Post no encontrado")
+    }
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(500).send("Error interno al modificar el post")
+  }
+})
+
 
 
 app.listen(PORT, () => {
